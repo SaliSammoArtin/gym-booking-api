@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:8080
+
+### 1. Kontrollera serverinstansen
+GET {{baseUrl}}/instance
+
+
+### 2. Hämta alla bokningar
+GET {{baseUrl}}/bookings
+
+
+### 3. Skapa en ny bokning
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+
+{
+  "name": "Linda Stark",
+  "email": "stark@example.com",
+  "dateTime": "2026-11-10T18:00:00",
+  "numberOfPeople": 1,
+  "status": "PENDING",
+  "activity": "Spinning"
+}
+
+
+### 4. Hämta en specifik bokning
+GET {{baseUrl}}/bookings/2
+
+
+### 5. Uppdatera en bokning
+PUT {{baseUrl}}/bookings/1
+Content-Type: application/json
+
+{
+  "name": "Sara Andersson",
+  "email": "sara@example.com",
+  "dateTime": "2026-11-10T19:00:00",
+  "numberOfPeople": 2,
+  "status": "CONFIRMED",
+  "activity": "Yoga"
+}
+
+
+### 6. Ta bort en bokning
+DELETE {{baseUrl}}/bookings/2
