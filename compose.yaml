@@ -1,0 +1,77 @@
+services:
+
+  # PostgreSQL
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${GYM_DB_NAME}
+      POSTGRES_USER: ${GYM_DB_USER}
+      POSTGRES_PASSWORD: ${GYM_DB_PASSWORD}
+    volumes:
+      - gymdb_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Backend-instans 1
+  api1:
+    build: .
+    image: gym-booking-api
+    environment:
+      GYM_DB_HOST: db
+      GYM_DB_PORT: 5432
+      GYM_DB_NAME: ${GYM_DB_NAME}
+      GYM_DB_USER: ${GYM_DB_USER}
+      GYM_DB_PASSWORD: ${GYM_DB_PASSWORD}
+      PORT: 8080
+      INSTANCE_NAME: api-1
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Backend-instans 2
+  api2:
+    image: gym-booking-api
+    environment:
+      GYM_DB_HOST: db
+      GYM_DB_PORT: 5432
+      GYM_DB_NAME: ${GYM_DB_NAME}
+      GYM_DB_USER: ${GYM_DB_USER}
+      GYM_DB_PASSWORD: ${GYM_DB_PASSWORD}
+      PORT: 8080
+      INSTANCE_NAME: api-2
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Backend-instans 3
+  api3:
+    image: gym-booking-api
+    environment:
+      GYM_DB_HOST: db
+      GYM_DB_PORT: 5432
+      GYM_DB_NAME: ${GYM_DB_NAME}
+      GYM_DB_USER: ${GYM_DB_USER}
+      GYM_DB_PASSWORD: ${GYM_DB_PASSWORD}
+      PORT: 8080
+      INSTANCE_NAME: api-3
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Nginx
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8085:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - api1
+      - api2
+      - api3
+
+volumes:
+  gymdb_data:
