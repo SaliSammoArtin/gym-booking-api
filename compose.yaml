@@ -10,12 +10,12 @@ services:
     volumes:
       - gymdb_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 10
 
-  # Backend-instans 1
+  # Backend 1
   api1:
     build: .
     image: gym-booking-api
@@ -31,7 +31,7 @@ services:
       db:
         condition: service_healthy
 
-  # Backend-instans 2
+  # Backend 2
   api2:
     image: gym-booking-api
     environment:
@@ -46,7 +46,7 @@ services:
       db:
         condition: service_healthy
 
-  # Backend-instans 3
+  # Backend 3
   api3:
     image: gym-booking-api
     environment:
